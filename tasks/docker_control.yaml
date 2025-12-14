@@ -1,0 +1,18 @@
+---
+# ===================================================================
+# Infrastructure: Docker Service Control
+# ===================================================================
+# Starts or stops the Docker service with retry logic
+# Used after configuration changes or before storage manipulation
+#
+# Parameter: docker_state (started or stopped)  
+# ===================================================================
+
+- name: "{{ docker_state | capitalize }} Docker service"
+  ansible.builtin.service:
+    name: docker
+    state: "{{ docker_state }}"
+  register: docker_service_result
+  retries: 3
+  delay: 2
+  until: docker_service_result is success

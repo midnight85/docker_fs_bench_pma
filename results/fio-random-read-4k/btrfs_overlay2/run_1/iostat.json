@@ -1,0 +1,110 @@
+{"sysstat": {
+	"hosts": [
+		{
+			"nodename": "ubuntu-server",
+			"sysname": "Linux",
+			"release": "6.8.0-88-generic",
+			"machine": "aarch64",
+			"number-of-cpus": 3,
+			"date": "12/11/2025",
+			"statistics": [
+				{
+					"avg-cpu":  {"user": 1.18, "nice": 0.01, "system": 0.92, "iowait": 0.06, "steal": 0.00, "idle": 97.83},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 264.11, "w/s": 150.67, "d/s": 0.03, "f/s": 0.52, "rkB/s": 1071.06, "wkB/s": 6308.58, "dkB/s": 27373.84, "rrqm/s": 0.00, "wrqm/s": 3.75, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 2.43, "drqm": 0.00, "r_await": 0.14, "w_await": 0.18, "d_await": 3.65, "f_await": 0.75, "rareq-sz": 4.06, "wareq-sz": 41.87, "dareq-sz": 1002315.47, "aqu-sz": 0.06, "util": 2.31}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 10.24, "nice": 0.00, "system": 3.07, "iowait": 0.68, "steal": 0.00, "idle": 86.01},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 0.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 0.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.00, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 0.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 0.00, "util": 0.00}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 0.34, "nice": 0.00, "system": 0.68, "iowait": 0.00, "steal": 0.00, "idle": 98.98},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 0.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 0.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.00, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 0.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 0.00, "util": 0.00}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 15.17, "nice": 0.34, "system": 4.83, "iowait": 1.38, "steal": 0.00, "idle": 78.28},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 0.00, "w/s": 217.00, "d/s": 0.00, "f/s": 30.00, "rkB/s": 0.00, "wkB/s": 11564.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 39.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 15.23, "drqm": 0.00, "r_await": 0.00, "w_await": 0.26, "d_await": 0.00, "f_await": 0.30, "rareq-sz": 0.00, "wareq-sz": 53.29, "dareq-sz": 0.00, "aqu-sz": 0.07, "util": 1.70}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 10.17, "nice": 0.00, "system": 2.37, "iowait": 0.68, "steal": 0.00, "idle": 86.78},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 0.00, "w/s": 145.00, "d/s": 0.00, "f/s": 40.00, "rkB/s": 0.00, "wkB/s": 1724.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 9.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 5.84, "drqm": 0.00, "r_await": 0.00, "w_await": 0.19, "d_await": 0.00, "f_await": 0.20, "rareq-sz": 0.00, "wareq-sz": 11.89, "dareq-sz": 0.00, "aqu-sz": 0.04, "util": 1.00}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 8.21, "nice": 0.00, "system": 15.67, "iowait": 0.37, "steal": 0.00, "idle": 75.75},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 6097.00, "w/s": 294.00, "d/s": 0.00, "f/s": 16.00, "rkB/s": 24388.00, "wkB/s": 206276.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 1.96, "d_await": 0.00, "f_await": 0.31, "rareq-sz": 4.00, "wareq-sz": 701.62, "dareq-sz": 0.00, "aqu-sz": 1.33, "util": 36.70}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 3.10, "nice": 0.00, "system": 29.20, "iowait": 0.00, "steal": 0.00, "idle": 67.70},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16370.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 65480.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.94, "util": 69.60}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.22, "nice": 0.00, "system": 28.89, "iowait": 0.00, "steal": 0.00, "idle": 68.89},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16794.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 67176.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.11, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.90, "util": 68.70}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.21, "nice": 0.00, "system": 29.20, "iowait": 0.00, "steal": 0.00, "idle": 68.58},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16727.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 66908.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.11, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.90, "util": 69.50}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.70, "nice": 0.00, "system": 27.03, "iowait": 0.00, "steal": 0.00, "idle": 70.27},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 15806.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 63224.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.95, "util": 73.30}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.21, "nice": 0.00, "system": 30.09, "iowait": 0.44, "steal": 0.00, "idle": 67.26},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16548.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 66192.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.94, "util": 70.70}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.21, "nice": 0.00, "system": 27.88, "iowait": 0.00, "steal": 0.00, "idle": 69.91},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 15936.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 63744.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.98, "util": 72.80}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 3.08, "nice": 0.00, "system": 29.52, "iowait": 0.00, "steal": 0.00, "idle": 67.40},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16333.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 65332.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.94, "util": 71.20}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 2.22, "nice": 0.00, "system": 28.00, "iowait": 0.00, "steal": 0.00, "idle": 69.78},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 16349.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 65396.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.12, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.92, "util": 71.60}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 3.51, "nice": 0.00, "system": 29.39, "iowait": 0.00, "steal": 0.00, "idle": 67.11},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 17021.00, "w/s": 0.00, "d/s": 0.00, "f/s": 0.00, "rkB/s": 68088.00, "wkB/s": 0.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 0.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 0.00, "drqm": 0.00, "r_await": 0.11, "w_await": 0.00, "d_await": 0.00, "f_await": 0.00, "rareq-sz": 4.00, "wareq-sz": 0.00, "dareq-sz": 0.00, "aqu-sz": 1.91, "util": 71.70}
+					]
+				},
+				{
+					"avg-cpu":  {"user": 5.65, "nice": 0.00, "system": 18.55, "iowait": 0.40, "steal": 0.00, "idle": 75.40},
+					"disk": [
+						{"disk_device": "vdb", "r/s": 10351.00, "w/s": 140.00, "d/s": 0.00, "f/s": 30.00, "rkB/s": 41400.00, "wkB/s": 6576.00, "dkB/s": 0.00, "rrqm/s": 0.00, "wrqm/s": 22.00, "drqm/s": 0.00, "rrqm": 0.00, "wrqm": 13.58, "drqm": 0.00, "r_await": 0.11, "w_await": 0.22, "d_await": 0.00, "f_await": 0.27, "rareq-sz": 4.00, "wareq-sz": 46.97, "dareq-sz": 0.00, "aqu-sz": 1.21, "util": 45.10}
+					]
+				}
+			]
+		}
+	]
+}}

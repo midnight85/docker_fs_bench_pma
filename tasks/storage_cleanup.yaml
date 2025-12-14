@@ -1,0 +1,69 @@
+---
+# ===================================================================
+# Infrastructure: Storage Cleanup
+# ===================================================================
+# Removes all storage configuration to prepare for next filesystem test.
+# Must handle all filesystem types: ext4, xfs, btrfs, zfs
+#
+# Workflow:
+#   1. Force stop Docker service
+#   2. Destroy ZFS pool (if zfs filesystem)
+#   3. Unmount partition from /var/lib/docker
+#   4. Wipe partition signatures (wipefs)
+#
+# This ensures clean slate between different filesystem configurations
+# ===================================================================
+
+# - name: "Stop all Docker containers"
+#   ansible.builtin.command: docker stop $(docker ps -aq)
+#   ignore_errors: true
+#   changed_when: false
+
+# - name: "Remove all Docker containers"
+#   ansible.builtin.command: docker rm -f $(docker ps -aq)
+#   ignore_errors: true
+#   changed_when: false
+
+- name: "Force stop Docker service"
+  ansible.builtin.service:
+    name: docker
+    state: stopped
+  ignore_errors: true
+
+- name: "Wait for Docker to fully stop"
+  ansible.builtin.wait_for:
+    timeout: 5
+
+- name: "Check if ZFS pool exists"
+  ansible.builtin.command: zpool list -H dockerpool
+  register: zpool_check
+  ignore_errors: true
+  changed_when: false
+  when: filesystem_name == 'zfs'
+
+- name: "Destroy ZFS pool if exists"
+  community.general.zpool:
+    name: dockerpool
+    state: absent
+  when:
+    - filesystem_name == 'zfs'
+    - zpool_check is defined
+    - zpool_check.rc == 0
+
+- name: "Unmount {{ mount_point }}"
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: unmounted
+  ignore_errors: true
+
+- name: "Wait after unmounting"
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: "Wipe partition signatures"
+  ansible.builtin.command: wipefs -a {{ partition }}
+  register: wipefs_result
+  retries: 3
+  delay: 2
+  until: wipefs_result.rc == 0
+  ignore_errors: true

@@ -1,0 +1,17 @@
+---
+# ===================================================================
+# Infrastructure: Mount Storage
+# ===================================================================
+# Mounts the formatted partition to /var/lib/docker
+# This makes the tested filesystem the active storage for Docker containers
+#
+# Mount options (src, fstype, opts) come from vars/filesystems.yaml
+# ===================================================================
+
+- name: "Mount {{ filesystem_name }} at {{ mount_point }}"
+  ansible.builtin.mount:
+    path: "{{ mount_point }}"
+    src: "{{ filesystem.mount_options.src }}"
+    fstype: "{{ filesystem.mount_options.fstype }}"
+    opts: "{{ filesystem.mount_options.opts | default('defaults') }}"
+    state: mounted

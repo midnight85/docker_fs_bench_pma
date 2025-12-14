@@ -1,0 +1,15 @@
+---
+# Monitoring tools
+default_monitoring:
+  # I/O statistics - disk performance
+  # Flags: -x (extended), -o JSON (JSON output), 1 (interval), -p (partition)
+  - name: iostat
+    command: "iostat -x -o JSON 1 -p {{ partition }}"
+    output_file: "iostat.json"
+
+  # Docker container stats
+  - name: docker-stats
+    command: while true; do docker container stats --no-stream --format '{% raw %}{{json .}}{% endraw %}' {{ target_container_name | default(workload.name ~ '-' ~ filesystem_name) }} 2>/dev/null | jq -c '.'; sleep 1; done
+    output_file: "docker_stats.jsonl"
+    interval: 1
+

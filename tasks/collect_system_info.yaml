@@ -1,0 +1,34 @@
+---
+# ============================================================================
+# STAGE: Initialization - System Information Collection
+# ============================================================================
+# Collects system metadata (hostname, OS, CPU, RAM, disk info) into a JSON file.
+# This provides context for benchmark results and helps identify hardware differences.
+# Output: {base_log_dir}/system_info/system_metadata.json
+# ============================================================================
+
+- name: Create system info directory
+  ansible.builtin.file:
+    path: "{{ base_log_dir }}/system_info"
+    state: directory
+    mode: "0755"
+
+- name: Collect system info
+  ansible.builtin.copy:
+    dest: "{{ base_log_dir }}/system_info/system_metadata.json"
+    content: |
+      {
+        "hostname": "{{ ansible_hostname }}",
+        "os_distro": "{{ ansible_distribution }} {{ ansible_distribution_version }}",
+        "kernel_version": "{{ ansible_kernel }}",
+        "cpu_model": "{{ ansible_processor[1] | default(ansible_processor[0]) | default('Unknown CPU') }}",
+        "cpu_cores_total": {{ ansible_processor_vcpus | default(1) }},
+        "ram_gb": {{ (ansible_memtotal_mb / 1024) | round(2) }},
+        "target_disk": {
+          "path": "{{ partition }}",
+          "model": "{{ ansible_devices[partition | basename]['model'] | default('Virtual/Unknown') }}",
+          "size": "{{ ansible_devices[partition | basename]['size'] | default('Unknown') }}",
+          "rotational": {{ ansible_devices[partition | basename]['rotational'] | default('unknown') }}
+        },
+        "timestamp": "{{ ansible_date_time.iso8601 }}"
+      }

@@ -1,0 +1,15 @@
+{
+  "hostname": "ubuntu",
+  "os_distro": "Ubuntu 24.04",
+  "kernel_version": "6.8.0-88-generic",
+  "cpu_model": "AuthenticAMD",
+  "cpu_cores_total": 4,
+  "ram_gb": 7.75,
+  "target_disk": {
+    "path": "/dev/vdb",
+    "model": "",
+    "size": "20.00 GB",
+    "rotational": 1
+  },
+  "timestamp": "2025-12-11T13:07:28Z"
+}

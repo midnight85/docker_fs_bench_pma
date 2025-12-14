@@ -1,0 +1,5 @@
+{"BlockIO":"96.2MB / 0B","CPUPerc":"34.52%","Container":"fio-sequential-write-64k-zfs","ID":"01435eeee5ac","MemPerc":"0.26%","MemUsage":"10.34MiB / 3.811GiB","Name":"fio-sequential-write-64k-zfs","NetIO":"3.39MB / 30.4kB","PIDs":"6"}
+{"BlockIO":"159MB / 0B","CPUPerc":"28.12%","Container":"fio-sequential-write-64k-zfs","ID":"01435eeee5ac","MemPerc":"0.26%","MemUsage":"10.33MiB / 3.811GiB","Name":"fio-sequential-write-64k-zfs","NetIO":"3.39MB / 30.4kB","PIDs":"6"}
+{"BlockIO":"367MB / 0B","CPUPerc":"27.61%","Container":"fio-sequential-write-64k-zfs","ID":"01435eeee5ac","MemPerc":"0.26%","MemUsage":"10.33MiB / 3.811GiB","Name":"fio-sequential-write-64k-zfs","NetIO":"3.39MB / 30.5kB","PIDs":"6"}
+{"BlockIO":"584MB / 0B","CPUPerc":"29.36%","Container":"fio-sequential-write-64k-zfs","ID":"01435eeee5ac","MemPerc":"0.26%","MemUsage":"10.33MiB / 3.811GiB","Name":"fio-sequential-write-64k-zfs","NetIO":"3.39MB / 30.5kB","PIDs":"6"}
+{"BlockIO":"794MB / 0B","CPUPerc":"27.93%","Container":"fio-sequential-write-64k-zfs","ID":"01435eeee5ac","MemPerc":"0.26%","MemUsage":"10.33MiB / 3.811GiB","Name":"fio-sequential-write-64k-zfs","NetIO":"3.39MB / 30.5kB","PIDs":"6"}

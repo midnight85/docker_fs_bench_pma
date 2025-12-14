@@ -1,0 +1,32 @@
+---
+# ============================================================================
+# STAGE: Filesystem Testing Lifecycle
+# ============================================================================
+# Orchestrates the complete testing cycle for ONE filesystem configuration:
+#   1. Format partition with specified filesystem (ext4/xfs/btrfs/zfs)
+#   2. Mount partition to /var/lib/docker
+#   3. Configure Docker with corresponding storage driver
+#   4. Start Docker service
+#   5. Run all workloads with monitoring
+#   6. Stop Docker
+#   7. Unmount and cleanup
+#
+# This task is called in a loop for each filesystem in vars/filesystems.yaml
+# ============================================================================
+
+- name: "Set filesystem name"
+  ansible.builtin.set_fact:
+    filesystem_name: "{{ filesystem.name }}"
+    storage_driver: "{{ filesystem.docker_driver }}"
+    unique_fs_id: "{{ filesystem.name }}_{{ filesystem.docker_driver }}"
+
+- name: "Run container workloads on {{ filesystem_name }}"
+  ansible.builtin.include_tasks: tasks/run_workloads.yaml
+
+- name: "Stop Docker after {{ filesystem_name }} testing"
+  ansible.builtin.include_tasks: tasks/docker_control.yaml
+  vars:
+    docker_state: stopped
+
+- name: "Final cleanup for {{ filesystem_name }}"
+  ansible.builtin.include_tasks: tasks/storage_cleanup.yaml

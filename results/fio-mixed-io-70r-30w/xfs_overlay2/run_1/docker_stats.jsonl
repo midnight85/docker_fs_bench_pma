@@ -1,0 +1,6 @@
+{"BlockIO":"238kB / 69.6kB","CPUPerc":"53.47%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.13%","MemUsage":"4.973MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.38MB / 23.6kB","PIDs":"2"}
+{"BlockIO":"98.3MB / 253MB","CPUPerc":"153.54%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.16%","MemUsage":"6.066MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.39MB / 23.6kB","PIDs":"6"}
+{"BlockIO":"209MB / 300MB","CPUPerc":"152.93%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.16%","MemUsage":"6.066MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.39MB / 23.7kB","PIDs":"6"}
+{"BlockIO":"320MB / 348MB","CPUPerc":"155.50%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.16%","MemUsage":"6.066MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.39MB / 23.7kB","PIDs":"6"}
+{"BlockIO":"431MB / 396MB","CPUPerc":"152.46%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.16%","MemUsage":"6.066MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.39MB / 23.7kB","PIDs":"6"}
+{"BlockIO":"541MB / 444MB","CPUPerc":"156.01%","Container":"fio-mixed-io-70r-30w-xfs","ID":"bcb419681803","MemPerc":"0.16%","MemUsage":"6.066MiB / 3.811GiB","Name":"fio-mixed-io-70r-30w-xfs","NetIO":"3.39MB / 23.7kB","PIDs":"6"}

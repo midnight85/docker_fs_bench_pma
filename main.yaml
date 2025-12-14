@@ -1,0 +1,84 @@
+---
+# ============================================================================
+# Docker Storage Driver Benchmark Suite - Main Playbook
+# ============================================================================
+# 
+# Purpose: Automated benchmarking of Docker storage drivers across different
+#          filesystems (ext4, xfs, btrfs, zfs) using containerized workloads
+#
+# Workflow Overview:
+#   1. INITIALIZATION
+#      - Load configuration from vars/
+#      - Create base result directory
+#      - Collect system metadata (CPU, RAM, disk info)
+#
+#   2. FILESYSTEM TESTING LOOP
+#      For each filesystem in vars/filesystems.yaml:
+#        - Format partition → Mount → Configure Docker → Run workloads
+#
+#   3. AGGREGATION - Combine results into JSON report
+#   4. UPLOAD - Upload to web server
+#
+# Configuration Files:
+#   - vars/filesystems.yaml: Filesystem definitions
+#   - vars/container_workloads.yaml: Benchmark definitions
+#   - vars/default_monitoring.yaml: Monitoring tools (iostat, docker stats)
+#   - vars/paths.yaml: System paths and partition
+#
+# ============================================================================
+
+- name: Configure Docker storage and run benchmarks
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - vars/paths.yaml
+    - vars/filesystems.yaml
+    - vars/default_monitoring.yaml
+    - vars/container_workloads.yaml
+  tasks:
+    # ---- STAGE 1: Initialization ----
+    - name: Ensure log directory exists
+      ansible.builtin.file:
+        path: "{{ base_log_dir }}"
+        state: directory
+        mode: "0755"
+
+    # - name: Collect system information
+    #   ansible.builtin.include_tasks: tasks/collect_system_info.yaml
+
+    # # ---- STAGE 2: Filesystem Testing ----
+    # - name: Process each filesystem configuration
+    #   ansible.builtin.include_tasks: tasks/process_filesystem.yaml
+    #   vars:
+    #     filesystem: "{{ item }}"
+    #   loop: "{{ filesystems }}"
+    #   loop_control:
+    #     label: "{{ item.name }}"
+
+    # # ---- STAGE 3: Aggregation ----
+    - name: Aggregate results
+      ansible.builtin.command: python3 scripts/aggregate_results.py
+      args:
+        chdir: "{{ playbook_dir }}"
+
+    # ---- STAGE 4: Upload ----
+    # Uploads aggregated report and config to web server
+    - name: Archive configuration files
+      community.general.archive:
+        path: vars/
+        dest: "{{ base_log_dir }}/config.zip"
+        format: zip
+
+    - name: Upload results to web server
+      ansible.builtin.command: >
+        curl -X POST
+        -F "file=@{{ base_log_dir }}/aggregated_report.json"
+        -F "config_file=@{{ base_log_dir }}/config.zip"
+        {{ web_app_url }}/api/upload
+      register: upload_response
+      changed_when: true
+      
+    - name: Display results link
+      ansible.builtin.debug:
+        msg: "View results at: {{ web_app_url }}{{ (upload_response.stdout | from_json).link }}"

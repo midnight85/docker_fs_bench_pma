@@ -1,0 +1,13 @@
+---
+# Partition or disk to use for benchmarking
+partition: "/dev/vdb"
+# Base directory for logs
+base_log_dir: "/mnt/shared/pma/results"
+# Mount point for Docker (don't change)
+mount_point: "/var/lib/docker"
+# Web app URL for uploading results
+# local web app
+#web_app_url: "http://192.168.0.193:8000"
+# remote web app
+web_app_url: "https://docker-fs-bench-webapp-1.onrender.com"
+

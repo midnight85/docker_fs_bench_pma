@@ -1,0 +1,42 @@
+---
+# ===================================================================
+# Execution: Single Container Workload
+# ===================================================================
+# Executes a workload that runs in a SINGLE Docker container.
+#
+# Workflow:
+#   1. Start monitoring (iostat, docker stats)
+#   2. Run benchmark container with:
+#      - Volume mount: {current_log_dir}:/results for output
+#      - Auto-remove after completion
+#      - Foreground execution (detach: false)
+#   3. Stop monitoring
+#
+# Used for: FIO benchmarks, standalone tests
+# Multi-container workloads (DB + client) use run_multi_container_workload.yaml
+# ===================================================================
+
+- name: "Set monitoring configuration"
+  ansible.builtin.set_fact:
+    active_monitoring: "{{ workload.monitoring | default(default_monitoring) }}"
+
+- name: "Start monitoring tools for {{ workload.name }}"
+  ansible.builtin.include_tasks: tasks/start_monitoring.yaml
+  when: active_monitoring is defined and active_monitoring | length > 0
+
+- name: "Run container: {{ workload.name }} on {{ filesystem_name }}"
+  community.docker.docker_container:
+    name: "{{ workload.name }}-{{ filesystem_name }}"
+    image: "{{ workload.image }}"
+    command: "{{ workload.command }}"
+    volumes:
+      - "{{ current_log_dir }}:/results:rw"
+    auto_remove: "{{ workload.auto_remove | default(true) }}"
+    detach: false
+    env: "{{ workload.env | default({}) }}"
+  register: workload_result
+  ignore_errors: true
+
+- name: "Stop monitoring tools for {{ workload.name }}"
+  ansible.builtin.include_tasks: tasks/stop_monitoring.yaml
+  when: active_monitoring is defined and active_monitoring | length > 0

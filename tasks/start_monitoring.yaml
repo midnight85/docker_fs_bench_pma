@@ -1,0 +1,47 @@
+---
+# ===================================================================
+# Monitoring: Start Background Processes
+# ===================================================================
+# Starts background monitoring tools (iostat, docker stats) that collect
+# system metrics during benchmark execution.
+#
+# Process:
+#   1. Initialize empty PID list
+#   2. Start each monitoring tool in background (nohup)
+#   3. Store PIDs for graceful shutdown later
+#   4. Wait 2 seconds for tools to initialize
+#
+# Tools defined in vars/default_monitoring.yaml or per-workload override
+# Output redirected to: {current_log_dir}/{output_file}
+# ===================================================================
+
+- name: "Initialize monitoring PIDs list"
+  ansible.builtin.set_fact:
+    monitoring_pids: []
+
+- name: "Start monitoring tools"
+  ansible.builtin.shell: |
+    nohup bash -c "{{ monitor_item.command }}" > {{ current_log_dir }}/{{ monitor_item.output_file }} 2>&1 &
+    echo $!
+  register: monitor_pid
+  loop: "{{ active_monitoring }}"
+  loop_control:
+    loop_var: monitor_item
+    label: "{{ monitor_item.name }}"
+  changed_when: false
+
+- name: "Store monitoring PIDs"
+  ansible.builtin.set_fact:
+    monitoring_pids: "{{ monitoring_pids + [pid_item.stdout | trim] }}"
+  loop: "{{ monitor_pid.results }}"
+  loop_control:
+    loop_var: pid_item
+    label: "PID: {{ pid_item.stdout | trim }}"
+
+- name: "Wait for monitoring tools to initialize"
+  ansible.builtin.pause:
+    seconds: 2
+
+- name: "Log monitoring start"
+  ansible.builtin.debug:
+    msg: "Started {{ active_monitoring | length }} monitoring tool(s) with PIDs: {{ monitoring_pids | join(', ') }}"

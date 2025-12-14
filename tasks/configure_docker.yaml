@@ -1,0 +1,18 @@
+---
+# ===================================================================
+# Infrastructure: Configure Docker Storage Driver
+# ===================================================================
+# Updates /etc/docker/daemon.json with the storage driver matching filesystem
+# Examples: overlay2 (ext4/xfs), btrfs (btrfs), zfs (zfs)
+#
+# Docker must be restarted after this change to apply new configuration
+# ===================================================================
+
+- name: "Configure Docker daemon.json for {{ filesystem.docker_driver }} driver"
+  ansible.builtin.copy:
+    content: |
+      {
+        "storage-driver": "{{ filesystem.docker_driver }}"
+      }
+    dest: /etc/docker/daemon.json
+    mode: '0644'

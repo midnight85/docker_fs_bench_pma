@@ -1,0 +1,90 @@
+---
+# ===================================================================
+# Execution: Multi-Container Workload (App + Client)
+# ===================================================================
+# Executes workloads requiring TWO containers:
+#   - App Container: Database/service that must be running during test
+#   - Workload Container: Benchmark client that connects to app
+#
+# Workflow:
+#   1. Start App Container (MySQL, PostgreSQL, Nginx, etc.) in background
+#   2. Wait for app to be ready (configurable ready_wait_time)
+#   3. Start monitoring (targeting App Container)
+#   4. Run Workload Container (benchmark client) in foreground
+#      - Linked to app container for networking
+#      - Results saved to /results volume
+#   5. Stop monitoring
+#   6. Clean up both containers
+#
+# Used for: Sysbench (MySQL), pgbench (PostgreSQL), wrk (Nginx), etc.
+# ===================================================================
+
+
+- name: "Set app and workload names"
+  ansible.builtin.set_fact:
+    app_container_name: "{{ workload.app.name }}-{{ filesystem_name }}"
+    workload_container_name: "{{ workload.workload.name }}-{{ filesystem_name }}"
+
+- name: "Start App Container: {{ workload.app.name }}"
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    image: "{{ workload.app.image }}"
+    command: "{{ workload.app.command | default(omit) }}"
+    volumes: "{{ workload.app.volumes | default([]) }}"
+    env: "{{ workload.app.env | default({}) }}"
+    detach: true
+    auto_remove: true
+    state: started
+    network_mode: bridge
+  register: app_container_info
+
+- name: "Wait for App Container to be ready"
+  ansible.builtin.pause:
+    seconds: "{{ workload.app.ready_wait_time | default(10) }}"
+
+- name: "Set target container name for monitoring"
+  ansible.builtin.set_fact:
+    target_container_name: "{{ app_container_name }}"
+
+- name: "Set monitoring configuration"
+  ansible.builtin.set_fact:
+    active_monitoring: "{{ workload.monitoring | default(default_monitoring) }}"
+
+- name: "Debug target container name"
+  ansible.builtin.debug:
+    msg: "Target container for monitoring: {{ target_container_name }}"
+
+- name: "Start monitoring tools for {{ workload.name }}"
+  ansible.builtin.include_tasks: tasks/start_monitoring.yaml
+  when: active_monitoring is defined and active_monitoring | length > 0
+
+- name: "Run Workload Container: {{ workload.workload.name }}"
+  community.docker.docker_container:
+    name: "{{ workload_container_name }}"
+    image: "{{ workload.workload.image }}"
+    command: "{{ workload.workload.command }}"
+    volumes: "{{ [current_log_dir ~ ':/results:rw'] + (workload.workload.volumes | default([])) }}"
+    env: "{{ workload.workload.env | default({}) }}"
+    detach: false
+    auto_remove: false
+    entrypoint: []
+    links:
+      - "{{ app_container_name }}:{{ workload.app.name }}"
+  register: workload_result
+  ignore_errors: true
+
+- name: "Remove Workload Container: {{ workload.workload.name }}"
+  community.docker.docker_container:
+    name: "{{ workload_container_name }}"
+    state: absent
+  ignore_errors: true
+
+- name: "Stop monitoring tools for {{ workload.name }}"
+  ansible.builtin.include_tasks: tasks/stop_monitoring.yaml
+  when: active_monitoring is defined and active_monitoring | length > 0
+
+- name: "Stop App Container: {{ workload.app.name }}"
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    state: absent
+  ignore_errors: true

@@ -1,0 +1,24 @@
+---
+# Re-initialize storage: Stop Docker, Wipe, Format, Mount, Configure, Start Docker
+
+- name: "Stop Docker for storage re-initialization"
+  ansible.builtin.include_tasks: tasks/docker_control.yaml
+  vars:
+    docker_state: stopped
+
+- name: "Cleanup existing storage"
+  ansible.builtin.include_tasks: tasks/storage_cleanup.yaml
+
+- name: "Format storage with {{ filesystem_name }}"
+  ansible.builtin.include_tasks: tasks/format_storage.yaml
+
+- name: "Mount {{ filesystem_name }} filesystem"
+  ansible.builtin.include_tasks: tasks/mount_storage.yaml
+
+- name: "Configure Docker for {{ filesystem_name }}"
+  ansible.builtin.include_tasks: tasks/configure_docker.yaml
+
+- name: "Start Docker with {{ filesystem_name }} storage"
+  ansible.builtin.include_tasks: tasks/docker_control.yaml
+  vars:
+    docker_state: started

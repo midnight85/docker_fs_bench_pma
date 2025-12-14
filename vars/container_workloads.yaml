@@ -1,0 +1,167 @@
+---
+# Container workloads to run
+#
+# TEMPLATES:
+#
+# 1. Single Container Workload
+# - name: my-benchmark
+#   type: single  # Optional (default)
+#   image: my-image:latest
+#   command: "run-benchmark.sh"
+#   volumes: []
+#   env: {}
+#
+# 2. Multi-Container Workload (App + Workload Generator)
+# - name: my-complex-benchmark
+#   type: multi_container
+#   app:
+#     name: my-app
+#     image: app-image:latest
+#     ready_wait_time: 10
+#     env: {}
+#   workload:
+#     name: my-runner
+#     image: runner-image:latest
+#     command: "run-test.sh"
+#     volumes: [] # Results volume is auto-mounted to /results
+#
+benchmark_runs: 1
+benchmark_reinit_storage: true
+benchmark_drop_caches: true
+container_workloads:
+  #  випадкове читання (4K блоки)
+  - name: fio-random-read-4k
+    image: docker.io/alpine:latest
+    command: >-
+      sh -c "
+      apk add -q fio &&
+      fio
+      --name=random-read-4k
+      --filename=/tmp/testfile
+      --ioengine=libaio
+      --rw=randread
+      --bs=4k
+      --size=200M
+      --numjobs=4
+      --runtime=10
+      --time_based
+      --group_reporting
+      --direct=1
+      --output=/results/result.json
+      --output-format=json
+      "
+    volumes: []
+    auto_remove: true
+
+  # послідовний запис (64K блоки)
+  - name: fio-sequential-write-64k
+    image: docker.io/alpine:latest
+    command: >-
+      sh -c "
+      apk add -q fio &&
+      fio
+      --name=sequential-write-64k
+      --filename=/tmp/testfile
+      --ioengine=libaio
+      --rw=write
+      --bs=64k
+      --size=200M
+      --numjobs=4
+      --runtime=10
+      --time_based
+      --group_reporting
+      --direct=1
+      --output=/results/result.json
+      --output-format=json
+      "
+    # volumes:
+    #   - "{{ log_dir }}:/results:rw"
+    volumes: []
+    auto_remove: true
+
+  # # змішане навантаження (70% читання / 30% запис)
+  - name: fio-mixed-io-70r-30w
+    image: docker.io/alpine:latest
+    command: >-
+      sh -c "
+      apk add -q fio &&
+      fio
+      --name=mixed-io-70-30
+      --filename=/tmp/testfile
+      --ioengine=libaio
+      --rw=randrw
+      --bs=4k
+      --size=200M
+      --numjobs=4
+      --runtime=10
+      --time_based
+      --group_reporting
+      --rwmixread=70
+      --direct=1
+      --output=/results/result.json
+      --output-format=json
+      "
+    volumes: []
+    auto_remove: true
+
+  # # Sysbench OLTP (MySQL)
+  - name: sysbench-oltp
+    type: multi_container
+    app:
+      name: mysql-db
+      image: mysql:8.0
+      env:
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: testdb
+      command: --default-authentication-plugin=mysql_native_password
+      ready_wait_time: 20
+      volumes: []
+    workload:
+      name: sysbench-runner
+      image: severalnines/sysbench
+      command: >-
+        sh -c "
+        sysbench oltp_read_write --table-size=10000 --db-driver=mysql --mysql-host=mysql-db --mysql-user=root --mysql-password=password --mysql-db=testdb prepare &&
+        sysbench oltp_read_write --table-size=10000 --db-driver=mysql --mysql-host=mysql-db --mysql-user=root --mysql-password=password --mysql-db=testdb --threads=4 --time=60 run > /results/results.txt &&
+        sysbench oltp_read_write --table-size=10000 --db-driver=mysql --mysql-host=mysql-db --mysql-user=root --mysql-password=password --mysql-db=testdb cleanup
+        "
+      volumes: []
+
+  # # Postgres Pgbench
+  - name: postgres-pgbench
+    type: multi_container
+    app:
+      name: postgres-db
+      image: postgres:15
+      env:
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: testdb
+      ready_wait_time: 15
+      volumes: []
+    workload:
+      name: pgbench-runner
+      image: postgres:15
+      # pgbench is included in postgres image
+      command: >-
+        sh -c "
+        PGPASSWORD=password pgbench -h postgres-db -U postgres -i -s 10 testdb &&
+        PGPASSWORD=password pgbench -h postgres-db -U postgres -c 10 -j 2 -T 60 testdb > /results/results.txt
+        "
+      volumes: []
+
+  # 7. Webserver Bench (Nginx + wrk)
+  - name: webserver-bench
+    type: multi_container
+    app:
+      name: nginx-server
+      image: nginx:latest
+      ready_wait_time: 5
+      volumes: []
+    workload:
+      name: wrk-runner
+      image: williamyeh/wrk
+      command: >-
+        sh -c "
+        wrk -t4 -c100 -d30s http://nginx-server/ > /results/results.txt
+        "
+      volumes: []

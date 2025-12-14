@@ -1,0 +1,49 @@
+---
+# ===================================================================
+# Infrastructure: Format Storage
+# ===================================================================
+# Formats partition with specified filesystem type.
+# Supports: ext4, xfs, btrfs, zfs
+#
+# Standard filesystems (ext4/xfs/btrfs):
+#   - Execute mkfs command from filesystem.format_options.command
+#
+# ZFS (special handling):
+#   1. Create ZFS pool (dockerpool)
+#   2. Create ZFS dataset (dockerpool/docker)
+#   3. Apply tuning parameters (compression, atime, sync, etc.)
+#
+# Configuration from vars/filesystems.yaml
+# ===================================================================
+
+- name: "Format partition with standard filesystem ({{ filesystem_name }})"
+  ansible.builtin.command: "{{ filesystem.format_options.command }}"
+  when: filesystem_name != 'zfs'
+
+- name: "Create ZFS pool"
+  community.general.zpool:
+    name: "{{ filesystem.format_options.pool_name }}"
+    state: present
+    vdevs:
+      - disks:
+        - "{{ partition }}"
+    force: true
+  when: filesystem_name == 'zfs'
+
+- name: "Create ZFS dataset"
+  community.general.zfs:
+    name: "{{ filesystem.format_options.dataset_name }}"
+    state: present
+    extra_zfs_properties:
+      mountpoint: legacy
+  when: filesystem_name == 'zfs'
+
+- name: "Apply ZFS tuning parameters"
+  ansible.builtin.command: "zfs set {{ tuning_param }} {{ filesystem.format_options.dataset_name }}"
+  loop: "{{ filesystem.format_options.tuning | default([]) }}"
+  loop_control:
+    loop_var: tuning_param
+    label: "{{ tuning_param }}"
+  when: 
+    - filesystem_name == 'zfs'
+    - filesystem.format_options.tuning is defined

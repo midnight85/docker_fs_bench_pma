@@ -1,0 +1,61 @@
+---
+# ===================================================================
+# Workload Iteration Execution
+# ===================================================================
+# Manages a SINGLE iteration (run) of a benchmark workload.
+#
+# Workflow:
+#   1. Re-initialize storage (format + mount) for clean state
+#   2. Pull required Docker images
+#   3. Drop kernel caches (vm.drop_caches=3) for consistency
+#   4. Create result directory: {workload_log_dir}/run_{N}
+#   5. Execute workload (single or multi-container)
+#   6. Results saved to /results (mounted volume)
+#
+# This task is called multiple times (e.g., 3 runs) to collect statistics
+# ===================================================================
+
+- name: "Re-initialize storage for iteration {{ run_iteration }}"
+  ansible.builtin.include_tasks: tasks/reinit_storage.yaml
+  when: benchmark_reinit_storage | default(true)
+
+- name: "Pull required image for single workload"
+  community.docker.docker_image:
+    name: "{{ workload.image }}"
+    source: pull
+  when: workload.type is not defined or workload.type == 'single'
+
+- name: "Pull required app image for multi-container workload"
+  community.docker.docker_image:
+    name: "{{ workload.app.image }}"
+    source: pull
+  when: workload.type is defined and workload.type == 'multi_container'
+
+- name: "Pull required workload image for multi-container workload"
+  community.docker.docker_image:
+    name: "{{ workload.workload.image }}"
+    source: pull
+  when: workload.type is defined and workload.type == 'multi_container'
+
+- name: "Drop caches before iteration {{ run_iteration }}"
+  ansible.builtin.command: sysctl -w vm.drop_caches=3
+  become: true
+  when: benchmark_drop_caches | default(true)
+
+- name: "Create directory for iteration {{ run_iteration }}"
+  ansible.builtin.file:
+    path: "{{ workload_log_dir }}/run_{{ run_iteration }}"
+    state: directory
+    mode: "0777"
+
+- name: "Run single container workload {{ workload.name }} iteration {{ run_iteration }}"
+  ansible.builtin.include_tasks: tasks/run_single_workload.yaml
+  vars:
+    current_log_dir: "{{ workload_log_dir }}/run_{{ run_iteration }}"
+  when: workload.type is not defined or workload.type == 'single'
+
+- name: "Run multi-container workload {{ workload.name }} iteration {{ run_iteration }}"
+  ansible.builtin.include_tasks: tasks/run_multi_container_workload.yaml
+  vars:
+    current_log_dir: "{{ workload_log_dir }}/run_{{ run_iteration }}"
+  when: workload.type is defined and workload.type == 'multi_container'

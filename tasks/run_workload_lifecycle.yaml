@@ -1,0 +1,9 @@
+---
+# Full lifecycle for a single workload: Just trigger the loop
+# The loop will handle Reinit -> Pull -> Run for each iteration
+
+- name: "Execute workload with monitoring (multiple runs): {{ workload_item.name }}"
+  ansible.builtin.include_tasks: tasks/run_workload_loop.yaml
+  vars:
+    workload: "{{ workload_item }}"
+    workload_log_dir: "{{ base_log_dir }}/{{ workload_item.name }}/{{ unique_fs_id }}"

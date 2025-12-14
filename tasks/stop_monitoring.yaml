@@ -1,0 +1,63 @@
+---
+# Stop background monitoring processes
+- name: "Gracefully stop monitoring processes"
+  ansible.builtin.shell: |
+    if kill -0 {{ pid_item }} 2>/dev/null; then
+      # Try graceful shutdown with SIGINT (Ctrl+C equivalent)
+      kill -INT {{ pid_item }} 2>/dev/null || true
+      
+      # Wait up to 3 seconds for process to terminate
+      for i in {1..6}; do
+        if ! kill -0 {{ pid_item }} 2>/dev/null; then
+          echo "Process {{ pid_item }} terminated gracefully (SIGINT)"
+          exit 0
+        fi
+        sleep 0.5
+      done
+      
+      # Escalate to SIGTERM if still running
+      kill -TERM {{ pid_item }} 2>/dev/null || true
+      
+      # Wait up to 2 seconds
+      for i in {1..4}; do
+        if ! kill -0 {{ pid_item }} 2>/dev/null; then
+          echo "Process {{ pid_item }} terminated with SIGTERM"
+          exit 0
+        fi
+        sleep 0.5
+      done
+      
+      # Force kill if still running
+      kill -9 {{ pid_item }} 2>/dev/null || true
+      echo "Process {{ pid_item }} force-killed (SIGKILL)"
+    else
+      echo "PID {{ pid_item }} already stopped"
+    fi
+  loop: "{{ monitoring_pids }}"
+  loop_control:
+    loop_var: pid_item
+    label: "PID: {{ pid_item }}"
+  ignore_errors: true
+  changed_when: false
+  when: monitoring_pids is defined
+
+- name: "Wait for monitoring tools to flush data"
+  ansible.builtin.pause:
+    seconds: 2
+
+- name: "Verify monitoring output files"
+  ansible.builtin.stat:
+    path: "{{ workload_log_dir }}/{{ monitor_item.output_file }}"
+  register: monitoring_files
+  loop: "{{ active_monitoring }}"
+  loop_control:
+    loop_var: monitor_item
+    label: "{{ monitor_item.output_file }}"
+
+- name: "Log monitoring results"
+  ansible.builtin.debug:
+    msg: "Monitoring file {{ file_item.monitor_item.output_file }}: {{ 'exists' if file_item.stat.exists else 'missing' }} ({{ file_item.stat.size | default(0) }} bytes)"
+  loop: "{{ monitoring_files.results }}"
+  loop_control:
+    loop_var: file_item
+    label: "{{ file_item.monitor_item.output_file }}"

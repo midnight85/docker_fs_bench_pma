@@ -1,0 +1,70 @@
+---
+# Filesystem configurations
+filesystems:
+  - name: ext4
+    format_options:
+      command: "mkfs.ext4 -F {{ partition }}"
+    mount_options:
+      src: "{{ partition }}"
+      fstype: ext4
+      opts: noatime
+    docker_driver: overlay2
+
+  - name: xfs
+    format_options:
+      command: "mkfs.xfs -f -m crc=1 -n ftype=1 {{ partition }}"
+    mount_options:
+      src: "{{ partition }}"
+      fstype: xfs
+      opts: noatime
+    docker_driver: overlay2
+  
+  - name: btrfs
+    format_options:
+      command: "mkfs.btrfs -f {{ partition }}"
+    mount_options:
+      src: "{{ partition }}"
+      fstype: btrfs
+      opts: noatime
+    docker_driver: btrfs
+
+  - name: btrfs
+    format_options:
+      command: "mkfs.btrfs -f {{ partition }}"
+    mount_options:
+      src: "{{ partition }}"
+      fstype: btrfs
+      opts: noatime
+    docker_driver: overlay2
+  
+  - name: zfs
+    format_options:
+      pool_name: dockerpool
+      dataset_name: dockerpool/docker
+      tuning:
+        # === ZFS Cache Control (ARC) ===
+        # By default, ZFS caches data in RAM (ARC), which can give
+        # unfair advantage in benchmarks (reads served from cache, not disk).
+        # primarycache options:
+        #   - all (default): cache both data and metadata in ARC
+        #   - metadata: cache only metadata, force data reads from disk
+        #   - none: disable all ARC caching (may hurt performance)
+        - primarycache=metadata
+        - compression=off         # Disable compression to reduce CPU overhead
+        - checksum=off            # Disable checksumming (NOT recommended for production, only for benchmarks)
+        - atime=off
+        - relatime=off
+        # === Synchronous Write Behavior ===
+        # sync options:
+        #   - always (default): All synchronous writes are flushed to disk immediately (SAFEST, slowest)
+        #   - standard: Most writes are synchronous, some may be asynchronous
+        #   - disabled: All writes are asynchronous (FASTEST, unsafe - risk of data loss on power failure)
+        # For benchmarks: use 'disabled' for maximum performance
+        # For production: use 'always' or 'standard' for data safety
+        - sync=standard
+    mount_options:
+      src: dockerpool/docker
+      fstype: zfs
+      opts: noatime
+    docker_driver: zfs
+
