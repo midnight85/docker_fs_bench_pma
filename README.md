@@ -1,6 +1,6 @@
-# Docker Storage Driver Benchmark Suite (PMA)
+# Automated Testing of Linux Filesystems Impact on Containerized Environments (PMA)
 
-Automated benchmarking of Docker storage drivers across different filesystems (ext4, xfs, btrfs, zfs) using containerized workloads.
+An automated system for benchmarking and analyzing how different Linux filesystems (ext4, xfs, btrfs, zfs) influence the performance of containerized workloads.
 
 ## Features
 
